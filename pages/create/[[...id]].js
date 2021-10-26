@@ -60,7 +60,7 @@ const ProductsManager = () => {
       });
 
     files.forEach((file) => {
-      if (file.size > 1024 * 1024)
+      if (file.size > 3000 * 3000)
         return (err = "The largest image size is 1mb");
 
       if (file.type !== "image/jpeg" && file.type !== "image/png")
@@ -140,7 +140,10 @@ const ProductsManager = () => {
   };
 
   return (
-    <div className="products_manager">
+    <div
+      className="products_manager"
+      style={{ width: "90%", margin: "0 auto" }}
+    >
       <Head>
         <title>Products Manager</title>
       </Head>

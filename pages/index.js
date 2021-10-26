@@ -1,22 +1,77 @@
 import Head from "next/head";
 import { useState, useContext, useEffect } from "react";
 import { DataContext } from "../store/GlobalState";
-
 import { getData } from "../utils/fetchData";
 import ProductItem from "../components/product/ProductItem";
 import filterSearch from "../utils/filterSearch";
 import { useRouter } from "next/router";
 import Filter from "../components/Filter";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 const Home = (props) => {
   const [products, setProducts] = useState(props.products);
-
   const [isCheck, setIsCheck] = useState(false);
   const [page, setPage] = useState(1);
   const router = useRouter();
-
   const { state, dispatch } = useContext(DataContext);
   const { auth } = state;
+  console.log(products);
+
+  const shirinliklar = [];
+  const technology = [];
+
+  products.map((item) =>
+    item.category === "6173134d62aa3ac3f6152eeb" ? shirinliklar.push(item) : ""
+  );
+  products.map((item) =>
+    item.category === "61741751bf75b5d473ccb1b0" ? technology.push(item) : ""
+  );
+
+  console.log(shirinliklar);
+  console.log(technology);
+
+  // -------------------------------------------------
+  const settings = {
+    dots: true,
+    infinite: true,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    cssEase: "linear",
+    pauseOnHover: true,
+    speed: 1000,
+    // responsive: [
+    //   {
+    //     breakpoint: 1024,
+    //     settings: {
+    //       slidesToShow: 3,
+    //       slidesToScroll: 1,
+    //       infinite: true,
+    //       dots: true,
+    //     },
+    //   },
+    //   {
+    //     breakpoint: 600,
+    //     settings: {
+    //       slidesToShow: 2,
+    //       slidesToScroll: 1,
+    //     },
+    //   },
+    //   {
+    //     breakpoint: 480,
+    //     settings: {
+    //       slidesToShow: 1.3,
+    //       slidesToScroll: 1,
+    //       infinite: true,
+    //       dots: true,
+    //     },
+    //   },
+    // ],
+  };
+  // -------------------------------------------------
 
   useEffect(() => {
     setProducts(props.products);
@@ -95,6 +150,36 @@ const Home = (props) => {
         </div>
       )}
 
+      <div className="product__slick">
+        {shirinliklar.length === 0 ? (
+          <h2>No Products</h2>
+        ) : (
+          <Slider {...settings}>
+            {shirinliklar.map((product) => (
+              <ProductItem
+                key={product._id}
+                product={product}
+                handleCheck={handleCheck}
+              />
+            ))}
+          </Slider>
+        )}
+      </div>
+      <div className="product__slick">
+        {technology.length === 0 ? (
+          <h2>No Products</h2>
+        ) : (
+          <Slider {...settings}>
+            {technology.map((product) => (
+              <ProductItem
+                key={product._id}
+                product={product}
+                handleCheck={handleCheck}
+              />
+            ))}
+          </Slider>
+        )}
+      </div>
       <div className="products">
         {products.length === 0 ? (
           <h2>No Products</h2>
@@ -109,7 +194,7 @@ const Home = (props) => {
         )}
       </div>
 
-      {props.result < page * 6 ? (
+      {/* {props.result < page * 6 ? (
         ""
       ) : (
         <button
@@ -118,23 +203,20 @@ const Home = (props) => {
         >
           Load more
         </button>
-      )}
+      )} */}
     </div>
   );
 };
 
 export async function getServerSideProps({ query }) {
-  const page = query.page || 1;
   const category = query.category || "all";
   const sort = query.sort || "";
   const search = query.search || "all";
 
   const res = await getData(
-    `product?limit=${
-      page * 6
-    }&category=${category}&sort=${sort}&title=${search}`
+    `product?limit=&category=${category}&sort=${sort}&title=${search}`
   );
-  // server side rendering
+
   return {
     props: {
       products: res.products,

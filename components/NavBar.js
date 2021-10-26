@@ -1,117 +1,225 @@
-import React, { useContext } from 'react'
-import Link from 'next/link'
-import {useRouter} from 'next/router'
-import {DataContext} from '../store/GlobalState'
-import Cookie from 'js-cookie'
-
+import React, { useContext, useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { DataContext } from "../store/GlobalState";
+import Cookie from "js-cookie";
+import { BsCartPlus, BsThreeDots } from "react-icons/bs";
+import { FiSearch } from "react-icons/fi";
+import { AiOutlineMenu } from "react-icons/ai";
+import filterSearch from "../utils/filterSearch";
+import { BiLogInCircle } from "react-icons/bi";
 function NavBar() {
-    const router = useRouter()
-    const {state, dispatch} = useContext(DataContext)
-    const { auth, cart } = state
+  const router = useRouter();
+  const { state, dispatch } = useContext(DataContext);
+  const { auth, cart } = state;
+  const [show, setShow] = useState(false);
+  const [click, setClick] = useState(false);
+  const [search, setSearch] = useState("");
+  // console.log(click);
+  // -----------------------------------------------------------------------
+  const [category, setCategory] = useState("");
 
+  const { categories } = state;
+  const handleCategory = (e) => {
+    setCategory(e.target.value);
+    filterSearch({ router, category: e.target.value });
+  };
 
-    const isActive = (r) => {
-        if(r === router.pathname){
-            return " active"
-        }else{
-            return ""
-        }
+  // const handleSort = (e) => {
+  //   setSort(e.target.value);
+  //   filterSearch({ router, sort: e.target.value });
+  // };
+  useEffect(() => {
+    filterSearch({ router, search: search ? search.toLowerCase() : "all" });
+  }, [search]);
+  // -----------------------------------------------------------------------
+
+  const isActive = (r) => {
+    if (r === router.pathname) {
+      return " active";
+    } else {
+      return "";
     }
+  };
+  // ---------- Nav Position  -------------------------------------------------------------
 
-    const handleLogout = () => {
-        Cookie.remove('refreshtoken', {path: 'api/auth/accessToken'})
-        localStorage.removeItem('firstLogin')
-        dispatch({ type: 'AUTH', payload: {} })
-        dispatch({ type: 'NOTIFY', payload: {success: 'Logged out!'} })
-        return router.push('/')
+  const transitionNavbar = () => {
+    if (window.scrollY > 100) {
+      setShow(true);
+    } else {
+      setShow(false);
     }
+  };
 
-    const adminRouter = () => {
-        return(
-            <>
-            <Link href="/users">
-                <a className="dropdown-item">Users</a>
-            </Link>
-            <Link href="/create">
-                <a className="dropdown-item">Products</a>
-            </Link>
-            <Link href="/categories">
-                <a className="dropdown-item">Categories</a>
-            </Link>
-            </>
-        )
-    }
+  useEffect(() => {
+    window.addEventListener("scroll", transitionNavbar);
+    return () => window.removeEventListener("scroll", transitionNavbar);
+  }, []);
+  // -----------------------------------------------------------------------
 
-    const loggedRouter = () => {
-        return(
-            <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src={auth.user.avatar} alt={auth.user.avatar} 
-                    style={{
-                        borderRadius: '50%', width: '30px', height: '30px',
-                        transform: 'translateY(-3px)', marginRight: '3px'
-                    }} /> {auth.user.name}
-                </a>
+  // ------ Nav Category -----------------------------------------------------------------
+  const hundleBtn = (e) => {
+    e.preventDefault();
+    setSearch("");
+  };
+  // -----------------------------------------------------------------------
 
-                <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <Link href="/profile">
-                        <a className="dropdown-item">Profile</a>
-                    </Link>
-                    {
-                        auth.user.role === 'admin' && adminRouter()
-                    }
-                    <div className="dropdown-divider"></div>
-                    <button className="dropdown-item" onClick={handleLogout}>Logout</button>
-                </div>
-            </li>
-        )
-    }
+  const handleLogout = () => {
+    Cookie.remove("refreshtoken", { path: "api/auth/accessToken" });
+    localStorage.removeItem("firstLogin");
+    dispatch({ type: "AUTH", payload: {} });
+    dispatch({ type: "NOTIFY", payload: { success: "Logged out!" } });
+    return router.push("/");
+  };
 
+  const adminRouter = () => {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <Link  href="/">
-                <a className="navbar-brand">DEVAT</a>
-            </Link>
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
+      <>
+        <Link href="/users">
+          <a className="dropdown-item">Users</a>
+        </Link>
+        <Link href="/create">
+          <a className="dropdown-item">Products</a>
+        </Link>
+        <Link href="/categories">
+          <a className="dropdown-item">Categories</a>
+        </Link>
+      </>
+    );
+  };
+
+  const loggedRouter = () => {
+    return (
+      <li className="nav-item dropdown">
+        <a
+          className="nav-link dropdown-toggle"
+          href="#"
+          id="navbarDropdownMenuLink"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <img
+            src={auth.user.avatar}
+            alt={auth.user.avatar}
+            style={{
+              borderRadius: "50%",
+              width: "30px",
+              height: "30px",
+              transform: "translateY(-3px)",
+              marginRight: "3px",
+            }}
+          />
+          {auth.user.name}
+        </a>
+
+        <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <Link href="/profile">
+            <a className="dropdown-item">Profile</a>
+          </Link>
+          {auth.user.role === "admin" && adminRouter()}
+          <div className="dropdown-divider"></div>
+          <button className="dropdown-item" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </li>
+    );
+  };
+
+  return (
+    <nav
+      className={`${
+        !show ? "navbar" : "navbar navbar__color"
+      } navbar-expand-lg`}
+    >
+      <Link href="/">
+        <a className="navbar__brand">BozorBoB</a>
+      </Link>
+      {show && (
+        <div className="nav__category">
+          <div>
+            <select
+              className="text-capitalize"
+              value={category}
+              onChange={handleCategory}
+            >
+              <option value="all">All Products</option>
+
+              {categories.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            <BsThreeDots />
+          </div>
+          <form autoComplete="on">
+            <input
+              type="text"
+              list="title_product"
+              value={search.toLowerCase()}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button onClick={hundleBtn}>
+              <FiSearch />
             </button>
-            <div className="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                <ul className="navbar-nav p-1">
-                    <li className="nav-item">
-                        <Link href="/cart">
-                            <a className={"nav-link" + isActive('/cart')}>
-                                <i className="fas fa-shopping-cart position-relative" aria-hidden="true">
-                                    <span className="position-absolute"
-                                    style={{
-                                        padding: '3px 6px',
-                                        background: '#ed143dc2',
-                                        borderRadius: '50%',
-                                        top: '-10px',
-                                        right: '-10px',
-                                        color: 'white',
-                                        fontSize: '14px'
-                                    }}>
-                                        {cart.length}
-                                    </span>
-                                </i> Cart
-                            </a>
-                        </Link>
-                    </li>
-                    {
-                        Object.keys(auth).length === 0 
-                        ? <li className="nav-item">
-                            <Link href="/signin">
-                                <a className={"nav-link" + isActive('/signin')}>
-                                    <i className="fas fa-user" aria-hidden="true"></i> Sign in
-                                </a>
-                            </Link>
-                        </li>
-                        : loggedRouter()
-                    }
-                </ul>
-            </div>
-        </nav>
-    )
+          </form>
+        </div>
+      )}
+      <a href="tel:+998939427899" className="nav__phone">
+        <h4 className="ml-5">Aloqa Uchun: (93) 942-78-99</h4>
+      </a>
+      <div className="nav__menu">
+        <div className="navbar__cart">
+          <Link href="/cart">
+            <a
+              className={"nav-link" + isActive("/cart")}
+              className="navbar__cartLink"
+            >
+              <BsCartPlus />
+              <b>{cart.length}</b>
+            </a>
+          </Link>
+        </div>
+        <button
+          className="navbar__toggler"
+          onClick={() => setClick(!click)}
+          type="button"
+        >
+          <AiOutlineMenu />
+        </button>
+        <ul className="navbar__nav">
+          {Object.keys(auth).length === 0 ? (
+            <li className="nav__listItem">
+              <Link href="/signin">
+                <a className={"nav__link" + isActive("/signin")}>
+                  {/* <i className="fas fa-user" aria-hidden="true"></i>  */}
+                  <BiLogInCircle /> Sign in
+                </a>
+              </Link>
+            </li>
+          ) : (
+            loggedRouter()
+          )}
+        </ul>
+      </div>
+      <div className={click ? "nav__mediaMenuPlus" : "nav__mediaMenu"}>
+        <li>
+          <a href="#">About Us</a>
+        </li>
+        <li>
+          <a href="#">About Us</a>
+        </li>
+        <li>
+          <a href="#">About Us</a>
+        </li>
+        <li>
+          <a href="#">About Us</a>
+        </li>
+      </div>
+    </nav>
+  );
 }
 
-export default NavBar
+export default NavBar;

@@ -1,20 +1,40 @@
-const Toast = ({msg, handleShow, bgColor}) => {
-    return(
-        <div className={`toast show position-fixed text-light ${bgColor}`}
-        style={{ top: '5px', right: '5px', zIndex: 9, minWidth: '280px' }} >
+import { useState, useEffect } from "react";
 
-            <div className={`toast-header ${bgColor} text-light`}>
-                <strong className="mr-auto text-light">{msg.title}</strong>
+const Toast = ({ msg, handleShow, bgColor }) => {
+  const [time, setTime] = useState(true);
+  const title = msg.title;
 
-                <button type="button" className="ml-2 mb-1 close text-light" 
-                data-dismiss="toast" style={{ outline: 'none'}} 
-                onClick={handleShow}>x</button>
-            </div>
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTime(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+  return (
+    time && (
+      <div
+        className={`toast show position-fixed text-light ${bgColor}`}
+        style={{ top: "5px", right: "5px", zIndex: 100, minWidth: "280px" }}
+      >
+        <div className={`toast-header ${bgColor} text-light`}>
+          <strong className="mr-auto text-light">{title}</strong>
+          <p>{time}</p>
 
-            <div className="toast-body">{msg.msg}</div>
-
+          <button
+            type="button"
+            className="ml-2 mb-1 close text-light"
+            data-dismiss="toast"
+            style={{ outline: "none" }}
+            onClick={handleShow}
+          >
+            x
+          </button>
         </div>
-    )
-}
 
-export default Toast
+        <div className="toast-body">{msg.msg}</div>
+      </div>
+    )
+  );
+};
+
+export default Toast;
