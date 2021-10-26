@@ -6,9 +6,13 @@ import Cookie from "js-cookie";
 import { BsCartPlus, BsThreeDots } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { AiOutlineMenu } from "react-icons/ai";
+import { useTranslation } from "react-i18next";
+
 import filterSearch from "../utils/filterSearch";
 import { BiLogInCircle } from "react-icons/bi";
 function NavBar() {
+  // const { t, i18n } = useTranslation();
+
   const router = useRouter();
   const { state, dispatch } = useContext(DataContext);
   const { auth, cart } = state;
@@ -169,7 +173,9 @@ function NavBar() {
       )}
       <a href="tel:+998939427899" className="nav__phone">
         <h4 className="ml-5">Aloqa Uchun: (93) 942-78-99</h4>
+        {/* <h5>{t("Contact__Number")}</h5> */}
       </a>
+
       <div className="nav__menu">
         <div className="navbar__cart">
           <Link href="/cart">

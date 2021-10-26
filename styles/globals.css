@@ -26,6 +26,23 @@ img {
   object-fit: cover;
   object-position: 0 30%;
 }
+/* ----------Banner------------- */
+
+.each-slide > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  height: 350px;
+}
+
+.each-slide span {
+  padding: 20px;
+  font-size: 20px;
+  background: #efefef;
+  text-align: center;
+}
+/* ----------end of the Banner------------- */
 
 /* ----------- Loading ------------- */
 @import url("./loading.css");
@@ -47,3 +64,9 @@ img {
 
 /* ----------- Filter ------------- */
 @import url("./filter.css");
+
+/* ----------- Banner ------------- */
+@import url("./Banner.css");
+
+/* ----------- DropDown ------------- */
+@import url("./DropDown.css");
