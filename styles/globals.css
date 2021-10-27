@@ -70,3 +70,6 @@ img {
 
 /* ----------- DropDown ------------- */
 @import url("./DropDown.css");
+
+/* ----------- Product Item ------------- */
+@import url("./productItem.css");

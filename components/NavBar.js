@@ -6,8 +6,7 @@ import Cookie from "js-cookie";
 import { BsCartPlus, BsThreeDots } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
 import { AiOutlineMenu } from "react-icons/ai";
-import { useTranslation } from "react-i18next";
-
+// import { useTranslation } from "react-i18next";
 import filterSearch from "../utils/filterSearch";
 import { BiLogInCircle } from "react-icons/bi";
 function NavBar() {
@@ -140,6 +139,7 @@ function NavBar() {
       <Link href="/">
         <a className="navbar__brand">BozorBoB</a>
       </Link>
+      {/* <I18n /> */}
       {show && (
         <div className="nav__category">
           <div>

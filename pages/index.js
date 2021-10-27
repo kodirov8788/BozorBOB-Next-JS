@@ -10,7 +10,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Banner from "./Banner";
-import I18n from "./I18n";
+// import I18n from "./I18n";
 
 const Home = (props) => {
   const [products, setProducts] = useState(props.products);
@@ -122,7 +122,7 @@ const Home = (props) => {
       <Head>
         <title>Home Page</title>
       </Head>
-      <I18n />
+      {/* <I18n /> */}
       <Filter state={state} />
 
       <Banner />

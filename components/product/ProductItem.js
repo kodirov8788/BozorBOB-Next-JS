@@ -11,13 +11,10 @@ const ProductItem = ({ product, handleCheck }) => {
     return (
       <>
         <Link href={`product/${product._id}`}>
-          <a className="btn btn-info" style={{ marginRight: "5px", flex: 1 }}>
-            View
-          </a>
+          <a className="btn__view">View</a>
         </Link>
         <button
-          className="btn btn-success"
-          style={{ marginLeft: "5px", flex: 1 }}
+          className="btn__buy"
           disabled={product.inStock === 0 ? true : false}
           onClick={() => dispatch(addToCart(product, cart))}
         >
@@ -61,7 +58,7 @@ const ProductItem = ({ product, handleCheck }) => {
   };
 
   return (
-    <div className="card" style={{ width: "10rem" }}>
+    <div className="product__card">
       {auth.user && auth.user.role === "admin" && (
         <input
           type="checkbox"
@@ -71,29 +68,29 @@ const ProductItem = ({ product, handleCheck }) => {
           onChange={() => handleCheck(product._id)}
         />
       )}
-      <img
-        className="card-img-top"
-        src={product.images[0].url}
-        alt={product.images[0].url}
-      />
-      <div className="card-body">
-        <h5 className="card-title text-capitalize" title={product.title}>
+      <img src={product.images[0].url} alt={product.images[0].url} />
+      <div className="card__body">
+        <h5 className="card-title text-capitalize mt-1" title={product.title}>
           {product.title}
         </h5>
 
-        <div className="row justify-content-between mx-0">
-          <h6 className="text-danger">${product.price}</h6>
+        <p className="card-text mb-1" title={product.description}>
+          {product.description}
+        </p>
+        <span className="product__sale">-20%</span>
+        <div className="row justify-content-between mx-0 mb-2">
+          <h6 className="text-muted" style={{ textDecoration: "line-through" }}>
+            ${product.price}
+          </h6>
           {product.inStock > 0 ? (
-            <h6 className="text-danger">In Stock: {product.inStock}</h6>
+            <div className="">
+              <h6 className="text-danger">In Stock: {product.price}</h6>
+              <h6 className="text-danger">In Stock: {product.inStock}</h6>
+            </div>
           ) : (
             <h6 className="text-danger">Out Stock</h6>
           )}
         </div>
-
-        <p className="card-text" title={product.description}>
-          {product.description}
-        </p>
-
         <div className="row justify-content-between mx-0">
           {!auth.user || auth.user.role !== "admin" ? userLink() : adminLink()}
         </div>
