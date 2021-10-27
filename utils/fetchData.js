@@ -1,5 +1,4 @@
 const baseUrl = process.env.BASE_URL;
-import axios from "axios";
 
 export const getData = async (url, token) => {
   const res = await fetch(`${baseUrl}/api/${url}`, {
@@ -12,17 +11,6 @@ export const getData = async (url, token) => {
   const data = await res.json();
   return data;
 };
-// export const getDatas = async (token) => {
-//   const res = await fetch(`${baseUrl}/`, {
-//     method: "GET",
-//     headers: {
-//       Authorization: token,
-//     },
-//   });
-
-//   const datas = await res.json();
-//   return datas;
-// };
 
 export const postData = async (url, post, token) => {
   const res = await fetch(`${baseUrl}/api/${url}`, {
